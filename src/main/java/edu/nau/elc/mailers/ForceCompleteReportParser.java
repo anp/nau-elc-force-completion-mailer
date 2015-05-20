@@ -10,6 +10,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +35,10 @@ public class ForceCompleteReportParser {
     public static List<Instructor> parseForceCompleteReportFile(File report) {
         Map<String, Instructor> instructors = new HashMap<>();
 
+        LocalDate date = LocalDate.now().minus(1, ChronoUnit.DAYS);
+        String dayBeforeToday = date.format(DateTimeFormatter.ofPattern("E, MM/dd/yyyy"));
+        String termCode = null;
+
         try {
             BufferedReader rdr = new BufferedReader(new FileReader(report));
 
@@ -39,11 +47,15 @@ public class ForceCompleteReportParser {
             while ((line = rdr.readLine()) != null) {
                 String[] elems = line.split("\t");
 
+                if (termCode == null) {
+                    termCode = parseTermCode(elems[courseIDIndex].substring(0, 4));
+                }
+
                 String uid = elems[uidIndex];
 
                 if (!instructors.containsKey(uid)) {
                     instructors.put(uid, new Instructor(elems[uidIndex],
-                            elems[firstNameIndex], elems[lastNameIndex], elems[emailIndex]));
+                            elems[firstNameIndex], elems[lastNameIndex], elems[emailIndex], termCode, dayBeforeToday));
                 }
 
                 Instructor instructor = instructors.get(uid);
@@ -70,7 +82,47 @@ public class ForceCompleteReportParser {
             log.error("Problem reading the report file.", ioe);
         }
 
-        return instructors.entrySet().stream()
+
+        List<Instructor> returnedInstructors = instructors.entrySet().stream()
                 .map(Map.Entry::getValue).sorted().collect(Collectors.toList());
+
+        for (Instructor i : returnedInstructors) {
+            Collections.sort(i.getCourses());
+            for (Course c : i.getCourses()) {
+                Collections.sort(c.getTests());
+            }
+        }
+
+        return returnedInstructors;
+    }
+
+    private static String parseTermCode(String termCode) {
+        char[] chars = termCode.toCharArray();
+
+        //this shouldn't happen as long as the report is well-formed
+        if (chars.length != 4) throw new IllegalArgumentException("Bad term code!");
+
+        String year = "" + chars[1] + chars[2];
+
+        String term;
+
+        switch (chars[3]) {
+            case '1':
+                term = "Spring";
+                break;
+            case '4':
+                term = "Summer";
+                break;
+            case '7':
+                term = "Fall";
+                break;
+            case '8':
+                term = "Winter";
+                break;
+            default:
+                term = "INVALID";
+                break;
+        }
+        return term + " 20" + year;
     }
 }

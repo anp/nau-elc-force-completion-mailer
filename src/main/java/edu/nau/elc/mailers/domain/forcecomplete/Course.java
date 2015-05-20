@@ -3,7 +3,7 @@ package edu.nau.elc.mailers.domain.forcecomplete;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Course {
+public class Course implements Comparable<Course> {
     private String courseID;
     private String courseName;
     private Instructor instructor;
@@ -52,8 +52,9 @@ public class Course {
 
         Course course = (Course) o;
 
-        if (!getCourseID().equals(course.getCourseID())) return false;
-        return getCourseName().equals(course.getCourseName()) && getInstructor().equals(course.getInstructor());
+        return getCourseID().equals(course.getCourseID())
+                && getCourseName().equals(course.getCourseName())
+                && getInstructor().equals(course.getInstructor());
 
     }
 
@@ -83,5 +84,10 @@ public class Course {
 
 
         return build.toString();
+    }
+
+    @Override
+    public int compareTo(Course other) {
+        return courseID.compareTo(other.getCourseID());
     }
 }

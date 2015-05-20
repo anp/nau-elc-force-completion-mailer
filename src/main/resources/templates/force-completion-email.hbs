@@ -1,0 +1,44 @@
+<p>Dear {{firstName}},</p>
+
+<p>One of the most common Blackboard Learn problems encountered by students and instructors is a student's inability to
+    resume taking a quiz or test after a temporary network glitch. This is greatly exacerbated by the use of the "Force
+    Completion"
+    test option. We strongly recommend that you never use this option in your Bb quiz or test unless you have a very
+    specific pedagogical reason to do so. If you are not familiar with the option, a more detailed explanation is
+    available at <a
+            href="https://bblearn.nau.edu/bbcswebdav/xid-28427315_1" target="_blank">this page</a>.
+</p>
+
+<p>We have run a report to find tests and quizzes in your {{term}} courses that have the Force Completion option
+    selected. We <i>strongly</i> encourage you to disable this option and to use <b>Auto-Submit</b> instead. To turn off
+    Force Completion for these items, simply find the item in your course (we have done our best to identify where that
+    is), select <b>Edit the Test Options</b> from its drop-down menu, and under the <b>Test Availability</b> section,
+    deselect/uncheck <b>Force Completion</b>, then click <b>Submit</b>. </p>
+
+<p>{{term}} tests with Force Completion enabled as of {{dayBeforeToday}}:</p>
+
+<ul>
+	{{#each courses}}
+        <li>
+			{{courseName}}
+            <ul>
+				{{#each tests}}
+                    <li>
+						{{path}} > {{name}}
+                    </li>
+				{{/each}}
+            </ul>
+        </li>
+	{{/each}}
+</ul>
+
+
+<p>Please contact the e-Learning Center if you would like to discuss this setting. In short, we recommend that you never
+    use the Force Completion option.</p>
+
+<p>
+    <a href="http://nau.edu/elc">e-Learning Center</a><br>
+    <a href="mailto:elc-help@nau.edu">elc-help@nau.edu</a><br>
+    In Flagstaff: +1 (928) 523-5554<br>
+    Elsewhere: +1 (866) 802-5256<br>
+</p>

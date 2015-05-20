@@ -9,12 +9,16 @@ public class Instructor implements Comparable<Instructor> {
     private String lastName;
     private String email;
     private List<Course> courses;
+    private String dayBeforeToday;
+    private String term;
 
-    public Instructor(String uid, String firstName, String lastName, String email) {
+    public Instructor(String uid, String firstName, String lastName, String email, String term, String dayBeforeToday) {
         this.uid = uid;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        this.term = term;
+        this.dayBeforeToday = dayBeforeToday;
 
         courses = new ArrayList<>();
     }
@@ -55,6 +59,14 @@ public class Instructor implements Comparable<Instructor> {
         return courses;
     }
 
+    public String getDayBeforeToday() {
+        return dayBeforeToday;
+    }
+
+    public String getTerm() {
+        return term;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -63,10 +75,13 @@ public class Instructor implements Comparable<Instructor> {
         Instructor that = (Instructor) o;
 
         if (getUid() != null ? !getUid().equals(that.getUid()) : that.getUid() != null) return false;
+
         if (getFirstName() != null ? !getFirstName().equals(that.getFirstName()) : that.getFirstName() != null)
             return false;
+
         if (getLastName() != null ? !getLastName().equals(that.getLastName()) : that.getLastName() != null)
             return false;
+
         return !(getEmail() != null ? !getEmail().equals(that.getEmail()) : that.getEmail() != null);
 
     }

@@ -1,6 +1,6 @@
 package edu.nau.elc.mailers.domain.forcecomplete;
 
-public class Test {
+public class Test implements Comparable<Test> {
     private String name;
     private String path;
     private Course parent;
@@ -42,8 +42,9 @@ public class Test {
 
         Test test = (Test) o;
 
-        if (!getName().equals(test.getName())) return false;
-        return getPath().equals(test.getPath()) && getParent().equals(test.getParent());
+        return getName().equals(test.getName())
+                && getPath().equals(test.getPath())
+                && getParent().equals(test.getParent());
 
     }
 
@@ -61,5 +62,16 @@ public class Test {
                 "name='" + name + '\'' +
                 ", path='" + path + '\'' +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Test other) {
+        int pathComp = path.compareTo(other.getPath());
+
+        if (pathComp == 0) {
+            return name.compareTo(other.getName());
+        } else {
+            return pathComp;
+        }
     }
 }
