@@ -49,7 +49,7 @@ public class ForceCompleteMailer {
 
         String defaultAddressStr = args[2];
 
-        boolean dryRun = args.length == 4 && args[3].equals("--dry-run");
+        boolean dryRun = (args.length == 4 && args[3].equals("--dry-run"));
         if (dryRun) {
             log.info("DRY RUN: Will send all mail to " + defaultAddressStr);
         }
@@ -72,8 +72,6 @@ public class ForceCompleteMailer {
         log.info("Report has " + numCourses + " courses.");
         log.info("Report has " + numTests + " tests.");
 
-        ForceCompleteMailer mailer = new ForceCompleteMailer();
-
         try {
 
             TemplateLoader loader = new ClassPathTemplateLoader("/templates", ".hbs");
@@ -95,34 +93,31 @@ public class ForceCompleteMailer {
             InternetAddress fromAddress = new InternetAddress("elc-help@nau.edu");
             fromAddress.setPersonal("e-Learning Center");
 
-            InternetAddress defaultAddress = new InternetAddress(defaultAddressStr);
-
             String subject = "Bb Learn Force Completion Notification";
 
             log.info("Sending emails...");
 
             int emailCount = 0;
-            for (Instructor i : forceCompleteInstructors) {
+            for (Instructor currInstructor : forceCompleteInstructors) {
                 MimeMessage msg = new MimeMessage(session);
 
-
-                //TODO change this to i.getEmail() for the final clause when ready to send
-                String toAddressString = (dryRun) ? defaultAddressStr : defaultAddressStr;
+                String toAddressString = currInstructor.getEmail();
+                if (dryRun) {
+                    toAddressString = defaultAddressStr;
+                }
 
                 InternetAddress toAddress = new InternetAddress(toAddressString);
-                toAddress.setPersonal(i.getFirstName() + " " + i.getLastName());
+                toAddress.setPersonal(currInstructor.getFirstName() + " " + currInstructor.getLastName());
 
                 msg.setFrom(fromAddress);
                 msg.setRecipient(Message.RecipientType.TO, toAddress);
 
-                //TODO only set this if not dry-running
-                msg.setRecipient(Message.RecipientType.BCC, defaultAddress);
                 msg.setSubject(subject);
-                msg.setText(template.apply(i), "utf-8", "html");
+                msg.setText(template.apply(currInstructor), "utf-8", "html");
 
                 Transport.send(msg);
 
-                log.debug("Message successfully sent to " + i.getEmail());
+                log.debug("Message successfully sent to " + toAddress.getPersonal() + " <" + toAddress.getAddress() + '>');
 
                 emailCount++;
             }
