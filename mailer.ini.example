@@ -1,0 +1,5 @@
+[FORCE_COMPLETE]
+logfile = force-completion-mailer.log
+default_email = email.you.own@nau.edu
+smtp_server = hostname.of.smtp.server
+smtp_port = 25
