@@ -4,9 +4,7 @@ import configparser
 import logging
 import argparse
 import smtplib
-
 from email.mime.text import MIMEText
-
 from datetime import datetime, timedelta
 
 from xlrd import open_workbook
@@ -178,6 +176,7 @@ log.info('%s courses found in report.', num_courses)
 log.info('%s tests found in report.', num_tests)
 log.info('Sending %s emails...', num_instructors)
 
+# render templates and send emails
 emails_sent = 0
 for uid in instructors:
     instructor = instructors.get(uid)
@@ -187,7 +186,8 @@ for uid in instructors:
     msg['Subject'] = 'Bb Learn Force Completion Notification'
     msg['From'] = 'e-Learning Center <elc-help@nau.edu>'
 
-    to_addr = 'adam.perry@nau.edu'  # default_email if dry_run else instructor.get('email')
+    # if it's a dry run, send to the test email, rather than each individual user
+    to_addr = default_email if dry_run else instructor.get('email')
 
     instructor_name = instructor['first'] + ' ' + instructor['last']
     msg['To'] = instructor_name + ' <' + to_addr + '>'
